@@ -180,12 +180,7 @@ class TopazPhotoAI:
                 settings_end = i
                 break
         settings_json = str(stdout[settings_start : settings_end + 1])
-        print("\\n found in settings_json:", settings_json.find("\\n") > -1)
-        print("newline found in settings_json:", settings_json.find("\n") > -1)
-        
         settings = json.loads(settings_json)
-        print('autoPilotSettings in settings:', 'autoPilotSettings' in settings)
-        print('Enhance in settings:', 'Enhance' in settings)
         autopilot_settings = settings.pop('autoPilotSettings')
         user_settings_json = json.dumps(settings, indent=2).replace('"', "'")
         autopilot_settings_json = json.dumps(autopilot_settings, indent=2).replace('"', "'")
@@ -213,7 +208,7 @@ class TopazPhotoAI:
         ]
         
         if upscale:
-            print('\033[31mTopazAIUpscaler:\033[0m upscaler override:', pprint.pformat(upscale))
+            print('\033[31mComfy-Topaz:\033[0m upscaler override:', pprint.pformat(upscale))
             tpai_args.append('--upscale')
             if upscale.enabled:
                 tpai_args.append('%s=%g' % ('scale', upscale.scale))
@@ -226,7 +221,7 @@ class TopazPhotoAI:
                 
             
         if sharpen:
-            print('\033[31mTopazAIUpscaler:\033[0m sharpen override:', pprint.pformat(sharpen))
+            print('\033[31mComfy-Topaz:\033[0m sharpen override:', pprint.pformat(sharpen))
             tpai_args.append('--sharpen')
             if sharpen.enabled:
                 tpai_args.append('%s=Sharpen %s' % ('model', sharpen.model))
@@ -242,11 +237,11 @@ class TopazPhotoAI:
                 tpai_args.append('enabled=false')
             
         tpai_args.append(img_file)
-        print('\033[31mTopazAIUpscaler:\033[0m tpaie.exe args:', pprint.pformat(tpai_args))
+        print('\033[31mComfy-Topaz:\033[0m tpaie.exe args:', pprint.pformat(tpai_args))
         p_tpai = subprocess.run(tpai_args, capture_output=True, text=True, shell=False)
-        print('\033[31mTopazAIUpscaler:\033[0m tpaie.exe return code:', p_tpai.returncode)
-        print('\033[31mTopazAIUpscaler:\033[0m tpaie.exe STDOUT:', p_tpai.stdout)
-        print('\033[31mTopazAIUpscaler:\033[0m tpaie.exe STDERR:', p_tpai.stderr)
+        print('\033[31mComfy-Topaz:\033[0m tpaie.exe return code:', p_tpai.returncode)
+        print('\033[31mComfy-Topaz:\033[0m tpaie.exe STDOUT:', p_tpai.stdout)
+        print('\033[31mComfy-Topaz:\033[0m tpaie.exe STDERR:', p_tpai.stderr)
 
         user_settings, autopilot_settings = self.get_settings(p_tpai.stdout)
 
@@ -255,7 +250,6 @@ class TopazPhotoAI:
     def upscale_image(self, images, compression=0, format='png', tpai_exe=None, 
                       upscale: Optional[TopazUpscaleSettings]=None, 
                       sharpen: Optional[TopazSharpenSettings]=None):
-        print('\033[31mTopazAIUpscaler:\033[0m upscale_image called with tpaie_exe:', tpai_exe)
         now_millis = int(time.time() * 1000)
         prefix = '%s-%d' % (self.prefix, now_millis)
         upscaled_images = []
@@ -271,12 +265,6 @@ class TopazPhotoAI:
             )
             (upscaled_img_file, user_settings, autopilot_settings) = self.topaz_upscale(img_file, compression, format, tpai_exe=tpai_exe, upscale=upscale, sharpen=sharpen)
             upscaled_image = self.load_image(upscaled_img_file)
-            print(
-                '\033[31mTopazAIUpscaler:\033[0m tpaie.exe upscaled:', upscaled_img_file, 
-                'user settings:', user_settings, 
-                'autopilot settings:', autopilot_settings
-            )
-            
             upscaled_images.append(upscaled_image)
             upscale_user_settings.append(user_settings)
             upscale_autopilot_settings.append(autopilot_settings)
