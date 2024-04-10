@@ -8,7 +8,7 @@ Comfy-Topaz is a custom node for ComfyUI, which integrates with Topaz Photo AI t
 Clone this repo into `ComfyUI/custom_nodes` and restart ComfyUI.
 
 # Usage
-## Auto-Pilot
+## Auto-Pilot Settings
 This is the simplest use case, which relies on Topaz Photo AI to auto-detect and apply those settings. This is done by omitting the `upscale` and `sharpen` settings as inputs:
 
 ![simple demo showing the auto-pilot settings](demo1.png)
@@ -18,7 +18,7 @@ Sometimes auto-pilot settings don't yield the best results, which warrants manua
 On the output side, `autopilot_settings` shows what the auto-pilot settings were, and `settings` shows all the features used and knobs turned to generate the final image.
 
 ## Manual Settings
-Override auto-pilot settings by providing manual parms:
+Override auto-pilot settings by providing manual settings:
 
 ![demo showing the upscale settings override](demo2.png)
 
